@@ -1,9 +1,12 @@
 const express = require("express");
+var cors = require("cors");
 const errorHandler = require("./middleware/errorHandler");
 const connectDatabase = require("./config/databaseConnection");
+
 require("dotenv").config();
 
 const app = express();
+app.use(cors());
 connectDatabase();
 
 app.use(express.json());

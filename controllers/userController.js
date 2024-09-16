@@ -23,7 +23,7 @@ const getUser = asyncHandler(async (req, res) => {
 //controller to create a new user
 //public access
 const createUser = asyncHandler(async (req, res) => {
-  const { username, email, userImage, location } = req.body;
+  const { username, email, userImage, location, savedTrips } = req.body;
   if (!username || !email || !location) {
     res.status(400);
     throw new Error("Please fill all required fields");
@@ -34,6 +34,7 @@ const createUser = asyncHandler(async (req, res) => {
     email,
     userImage,
     location,
+    savedTrips,
   });
   res.json(user);
 });

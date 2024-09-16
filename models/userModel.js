@@ -18,6 +18,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add User's location"],
     },
+    savedTrips: {
+      type: Number,
+      required: [false],
+    },
   },
   {
     timestamps: true,
