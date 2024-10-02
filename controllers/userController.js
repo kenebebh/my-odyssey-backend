@@ -23,18 +23,61 @@ const getUser = asyncHandler(async (req, res) => {
 //controller to create a new user
 //public access
 const createUser = asyncHandler(async (req, res) => {
-  const { username, email, userImage, location, savedTrips } = req.body;
-  if (!username || !email || !location) {
+  const {
+    firstName,
+    lastName,
+    email,
+    userImage,
+    gender,
+    dateOfBirth,
+    savedTripsCount,
+    verified,
+    deactivated,
+    phone,
+    address,
+    city,
+    country,
+    lastLoginDate,
+    bookedTrips,
+    travelHistory,
+    savedWishlists,
+    avgSessionDuration,
+    activityStatus,
+    travelInterests,
+    preferredDestinations,
+    supportTickets,
+    appRatings,
+  } = req.body;
+
+  if (!firstName || !lastName || !email || !gender || !dateOfBirth) {
     res.status(400);
     throw new Error("Please fill all required fields");
   }
 
   const user = await User.create({
-    username,
+    firstName,
+    lastName,
     email,
     userImage,
-    location,
-    savedTrips,
+    gender,
+    dateOfBirth,
+    savedTripsCount,
+    verified,
+    deactivated,
+    phone,
+    address,
+    city,
+    country,
+    lastLoginDate,
+    bookedTrips,
+    travelHistory,
+    savedWishlists,
+    avgSessionDuration,
+    activityStatus,
+    travelInterests,
+    preferredDestinations,
+    supportTickets,
+    appRatings,
   });
   res.json(user);
 });
