@@ -10,6 +10,7 @@ app.use(cors());
 connectDatabase();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use("/users", require("./routes/usersRoutes"));
 app.use(errorHandler);
 
