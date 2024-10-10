@@ -15,7 +15,7 @@ router.route("/").get(getUsers);
 router.route("/").post(createUser);
 
 //edit user details for a specific user
-router.route("/:id").put(updateUser);
+router.route("/:id").patch(updateUser);
 
 //get user by ID
 router.route("/:id").get(getUser);
