@@ -64,3 +64,31 @@ const createEvent = asyncHandler(async (req, res) => {
   });
   res.json(event);
 });
+
+//controller to update an event
+const updateEvent = asyncHandler(async (req, res) => {
+  const event = await Event.findById(req.params.id);
+  if (!event) {
+    res.status(404);
+    throw new Error("Event Not Found");
+  }
+  const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+
+  res.status(200).json(updatedEvent);
+});
+
+//controller to delete an event
+const deleteEvent = asyncHandler(async (req, res) => {
+  const event = await Event.findById(req.params.id);
+  if (!event) {
+    res.status(404);
+    throw new Error("Event Not Found");
+  }
+
+  const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+  res.status(200).json({ message: `Deleted event ${deleteEvent}` });
+});
+
+module.exports = { getEvents, getEvent, createEvent, updateEvent, deleteEvent };
