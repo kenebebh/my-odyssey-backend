@@ -12,6 +12,7 @@ connectDatabase();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/users", require("./routes/usersRoutes"));
+app.use("/events", require("./routes/eventRoutes"));
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
