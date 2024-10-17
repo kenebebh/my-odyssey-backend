@@ -19,6 +19,48 @@ const getEvent = asyncHandler(async (req, res) => {
 });
 
 //controller to create a new event
-// const createEvent = asyncHandler(async (req, res) => {
+const createEvent = asyncHandler(async (req, res) => {
+  const {
+    name,
+    startDate,
+    endDate,
+    country,
+    description,
+    image,
+    status,
+    location,
+    startTime,
+    endTime,
+    ticketPrice,
+    ticketAvailability,
+    gallery,
+    ads,
+    adStatus,
+    metrics,
+  } = req.body;
 
-// })
+  if (!name || !startDate || !endDate || !location) {
+    res.status(400);
+    throw new Error("Please fill all required fields");
+  }
+
+  const event = await Event.create({
+    name,
+    startDate,
+    endDate,
+    country,
+    description,
+    image,
+    status,
+    location,
+    startTime,
+    endTime,
+    ticketPrice,
+    ticketAvailability,
+    gallery,
+    ads,
+    adStatus,
+    metrics,
+  });
+  res.json(event);
+});
