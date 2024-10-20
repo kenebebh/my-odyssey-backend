@@ -25,10 +25,6 @@ const eventMetricsSchema = new mongoose.Schema({
 
 const eventSchema = new mongoose.Schema(
   {
-    id: {
-      type: mongoose.Schema.Types.ObjectId,
-      alias: "_id",
-    },
     name: {
       type: String,
       required: [true, "Please add an event name"],
@@ -102,9 +98,17 @@ const eventSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // This will automatically add createdAt and updatedAt fields
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
   }
 );
+
+// Transform the document when converting to JSON
+eventSchema.set("toJSON", {
+  transform: function (doc, ret) {
+    ret.id = ret._id.toHexString();
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  },
+});
 
 module.exports = mongoose.model("Event", eventSchema);
