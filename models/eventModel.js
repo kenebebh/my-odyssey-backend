@@ -98,6 +98,15 @@ const eventSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // This will automatically add createdAt and updatedAt fields
+  },
+  {
+    toJSON: {
+      transform: function (doc, ret) {
+        ret.id = ret._id; // Add `id` key
+        delete ret._id; // Remove `_id` key
+        delete ret.__v; // Optional: Remove __v (version key) if not needed
+      },
+    },
   }
 );
 

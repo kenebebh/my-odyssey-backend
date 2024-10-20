@@ -5,6 +5,17 @@ const Event = require("../models/eventModel");
 const getEvents = asyncHandler(async (req, res) => {
   const events = await Event.find();
   res.json(events);
+  // try {
+  //   const events = await Event.find().lean(); // Use lean() to get plain objects
+  //   const transformedEvents = events.map((event) => ({
+  //     ...event,
+  //     id: event._id,
+  //   }));
+
+  //   return res.json(transformedEvents); // Send data with 'id' instead of '_id'
+  // } catch (error) {
+  //   return res.status(500).json({ message: "Server Error" });
+  // }
 });
 
 //controller to get a specific event by ID
