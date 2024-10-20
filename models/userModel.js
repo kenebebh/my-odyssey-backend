@@ -137,4 +137,14 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// Transform the document when converting to JSON
+userSchema.set("toJSON", {
+  transform: function (doc, ret) {
+    ret.id = ret._id.toHexString();
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  },
+});
+
 module.exports = mongoose.model("User", userSchema);
