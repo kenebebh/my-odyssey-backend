@@ -3,19 +3,36 @@ const Event = require("../models/eventModel");
 
 //controller to get all events
 const getEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find();
-  res.json(events);
-  // try {
-  //   const events = await Event.find().lean(); // Use lean() to get plain objects
-  //   const transformedEvents = events.map((event) => ({
-  //     ...event,
-  //     id: event._id,
-  //   }));
+  // const events = await Event.find();
+  // res.json(events);
 
-  //   return res.json(transformedEvents); // Send data with 'id' instead of '_id'
-  // } catch (error) {
-  //   return res.status(500).json({ message: "Server Error" });
-  // }
+  try {
+    // Extract query parameters with defaults
+    const limit = parseInt(req.query.limit) || 10; // Default limit: 10
+    console.log(limit);
+    const page = parseInt(req.query.page) || 1; // Default page: 1
+
+    // MongoDB query to paginate results
+    const events = await Event.find()
+      .skip((page - 1) * limit) // Skip documents for previous pages
+      .limit(limit); // Limit the number of documents returned
+
+    // Optional: Include total count for pagination metadata
+    const totalEvents = await Event.countDocuments();
+
+    res.json({
+      data: events,
+      meta: {
+        total: totalEvents,
+        page,
+        limit,
+        totalPages: Math.ceil(totalEvents / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 //controller to get a specific event by ID
