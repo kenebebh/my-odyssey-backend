@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Event = require("../models/eventModel");
 
-//controller to get all events
+//controller to get all events and get with filtering or pagination if filter/pagination query was provided
 const getEvents = asyncHandler(async (req, res) => {
   // const events = await Event.find();
   // res.json(events);
@@ -116,7 +116,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
   }
 
   const deletedEvent = await Event.findByIdAndDelete(req.params.id);
-  res.status(200).json({ message: `Deleted event ${deleteEvent}` });
+  res.status(200).json({ message: `Deleted event ${deletedEvent}` });
 });
 
 module.exports = { getEvents, getEvent, createEvent, updateEvent, deleteEvent };
