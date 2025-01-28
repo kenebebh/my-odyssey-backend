@@ -18,9 +18,9 @@ router.route("/:id").get(getExperience);
 router.route("/").post(createExperience);
 
 //edit details for a particular event
-router.route("/:id").patch(updateEvent);
+router.route("/:id").patch(updateExperience);
 
-//delete an event
-router.route("/:id").delete(deleteEvent);
+//delete an experience
+router.route("/:id").delete(deleteExperience);
 
 module.exports = router;

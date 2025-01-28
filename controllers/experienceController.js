@@ -97,7 +97,7 @@ const deleteExperience = asyncHandler(async (req, res) => {
   const deletedExperience = await TopExperience.findByIdAndDelete(
     req.params.id
   );
-  res.status(200).json({ message: `Deleted event ${deletedExperience}` });
+  res.status(200).json({ message: `Deleted experience ${deletedExperience}` });
 });
 
 module.exports = {
