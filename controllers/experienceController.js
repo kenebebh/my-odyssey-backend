@@ -40,7 +40,7 @@ const getExperience = asyncHandler(async (req, res) => {
     throw new Error("Experience Not Found");
   }
 
-  res.sendStatus(200).json(experience);
+  res.status(200).json(experience);
 });
 
 //controller to create a new experience
