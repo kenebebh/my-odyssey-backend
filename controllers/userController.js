@@ -10,15 +10,21 @@ const getUsers = asyncHandler(async (req, res) => {
 
 //controller to get a specific user by ID
 //public access
-const getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    res.status(404);
-    throw new Error("User Not Found");
-  }
+const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    console.log(user);
 
-  res.status(200).json(user);
-});
+    if (!user) {
+      res.status(404).json({ message: "Can't find user" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    next();
+  }
+};
 
 //controller to create a new user
 //public access
