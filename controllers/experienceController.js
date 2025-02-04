@@ -35,9 +35,9 @@ const getExperiences = asyncHandler(async (req, res) => {
 //controller to get a specific experience by ID
 const getExperience = asyncHandler(async (req, res) => {
   const experience = await TopExperience.findById(req.params.id);
+
   if (!experience) {
-    res.status(404);
-    throw new Error("Experience Not Found");
+    res.status(404).json({ message: "Experience Not Found" });
   }
 
   res.status(200).json(experience);
@@ -71,8 +71,7 @@ const createExperience = asyncHandler(async (req, res) => {
 const updateExperience = asyncHandler(async (req, res) => {
   const experience = await TopExperience.findById(req.params.id);
   if (!experience) {
-    res.status(404);
-    throw new Error("Experience Not Found");
+    res.status(404).json({ message: "Experience Not Found" });
   }
 
   const updatedExperience = await TopExperience.findByIdAndUpdate(
@@ -90,8 +89,7 @@ const updateExperience = asyncHandler(async (req, res) => {
 const deleteExperience = asyncHandler(async (req, res) => {
   const experience = await TopExperience.findById(req.params.id);
   if (!experience) {
-    res.status(404);
-    throw new Error("Experience Not Found");
+    res.status(404).json({ message: "Experience Not Found" });
   }
 
   const deletedExperience = await TopExperience.findByIdAndDelete(

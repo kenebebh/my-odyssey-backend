@@ -93,8 +93,7 @@ const createUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (!user) {
-    res.status(404);
-    throw new Error("User Not Found");
+    res.status(404).json({ message: "Can't find user" });
   }
 
   const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
@@ -109,8 +108,7 @@ const updateUser = asyncHandler(async (req, res) => {
 const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (!user) {
-    res.status(404);
-    throw new Error("User Not Found");
+    res.status(404).json({ message: "Can't find user" });
   }
 
   await User.findByIdAndDelete(req.params.id);

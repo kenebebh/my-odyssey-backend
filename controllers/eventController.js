@@ -39,8 +39,7 @@ const getEvents = asyncHandler(async (req, res) => {
 const getEvent = asyncHandler(async (req, res) => {
   const event = await Event.findById(req.params.id);
   if (!event) {
-    res.status(404);
-    throw new Error("Event Not Found");
+    res.status(404).json({ message: "Event Not Found" });
   }
 
   res.status(200).json(event);
@@ -97,8 +96,7 @@ const createEvent = asyncHandler(async (req, res) => {
 const updateEvent = asyncHandler(async (req, res) => {
   const event = await Event.findById(req.params.id);
   if (!event) {
-    res.status(404);
-    throw new Error("Event Not Found");
+    res.status(404).json({ message: "Event Not Found" });
   }
   const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -111,8 +109,7 @@ const updateEvent = asyncHandler(async (req, res) => {
 const deleteEvent = asyncHandler(async (req, res) => {
   const event = await Event.findById(req.params.id);
   if (!event) {
-    res.status(404);
-    throw new Error("Event Not Found");
+    res.status(404).json({ message: "Event Not Found" });
   }
 
   const deletedEvent = await Event.findByIdAndDelete(req.params.id);
