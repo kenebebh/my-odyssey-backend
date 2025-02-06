@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const topExperienceSchema = new mongoose.Schema(
   {
@@ -64,4 +64,4 @@ topExperienceSchema.set("toJSON", {
 
 const TopExperience = mongoose.model("TopExperience", topExperienceSchema);
 
-module.exports = TopExperience;
+export default TopExperience;

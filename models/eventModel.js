@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const eventMetricsSchema = new mongoose.Schema({
   attendees: {
@@ -111,4 +111,6 @@ eventSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("Event", eventSchema);
+const Event = mongoose.model("Event", eventSchema);
+
+export default Event;

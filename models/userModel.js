@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 // Sub-schemas for nested objects
 const tripInfoSchema = new mongoose.Schema({
@@ -147,4 +147,5 @@ userSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+export default User;

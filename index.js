@@ -1,5 +1,4 @@
 import express from "express";
-// import { errorHandler } from "./middleware/errorHandler";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { connectDatabase } from "./config/databaseConnection.js";
 import dotenv from "dotenv";

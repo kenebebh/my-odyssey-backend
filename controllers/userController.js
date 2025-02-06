@@ -1,5 +1,5 @@
-const asyncHandler = require("express-async-handler");
-const User = require("../models/userModel");
+import expressAsyncHandler from "express-async-handler";
+import User from "../models/userModel";
 
 //controller to get all users
 //public access
@@ -115,4 +115,4 @@ const deleteUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: `Deleted user ${req.params.id}` });
 });
 
-module.exports = { getUsers, getUser, createUser, updateUser, deleteUser };
+export { getUsers, getUser, createUser, updateUser, deleteUser };

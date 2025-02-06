@@ -1,5 +1,5 @@
-const asyncHandler = require("express-async-handler");
-const TopExperience = require("../models/experienceModel");
+import expressAsyncHandler from "express-async-handler";
+import TopExperience from "../models/experienceModel.js";
 
 //controler to get all experiences/ get filtered and/or paginated experiences
 const getExperiences = asyncHandler(async (req, res) => {
@@ -98,7 +98,7 @@ const deleteExperience = asyncHandler(async (req, res) => {
   res.status(200).json({ message: `Deleted experience ${deletedExperience}` });
 });
 
-module.exports = {
+export {
   getExperiences,
   getExperience,
   createExperience,
