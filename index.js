@@ -3,6 +3,9 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { connectDatabase } from "./config/databaseConnection.js";
 import dotenv from "dotenv";
 import cors from "cors";
+import eventRoutes from "./routes/eventRoutes.js";
+import experienceRoutes from "./routes/experiencesRoutes.js";
+import usersRoutes from "./routes/usersRoutes.js";
 
 dotenv.config();
 
@@ -12,9 +15,9 @@ connectDatabase();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use("/users", require("./routes/usersRoutes"));
-app.use("/events", require("./routes/eventRoutes"));
-app.use("/top-experiences", require("./routes/experiencesRoutes"));
+app.use("/users", usersRoutes);
+app.use("/events", eventRoutes);
+app.use("/top-experiences", experienceRoutes);
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;

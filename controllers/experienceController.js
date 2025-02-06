@@ -1,4 +1,4 @@
-import expressAsyncHandler from "express-async-handler";
+import asyncHandler from "express-async-handler";
 import TopExperience from "../models/experienceModel.js";
 
 //controler to get all experiences/ get filtered and/or paginated experiences

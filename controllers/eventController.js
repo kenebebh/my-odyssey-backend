@@ -1,4 +1,4 @@
-import expressAsyncHandler from "express-async-handler";
+import asyncHandler from "express-async-handler";
 import Event from "../models/eventModel.js";
 
 //controller to get all events and get with filtering or pagination if filter/pagination query was provided
