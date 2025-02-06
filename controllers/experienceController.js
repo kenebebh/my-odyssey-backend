@@ -1,8 +1,9 @@
-import asyncHandler from "express-async-handler";
+// import asyncHandler from "express-async-handler";
 import TopExperience from "../models/experienceModel.js";
+import mongoose from "mongoose";
 
 //controler to get all experiences/ get filtered and/or paginated experiences
-const getExperiences = asyncHandler(async (req, res) => {
+const getExperiences = async (req, res) => {
   try {
     // Extract query parameters with defaults
     const limit = parseInt(req.query.limit) || 10; // Default limit: 10
@@ -30,73 +31,102 @@ const getExperiences = asyncHandler(async (req, res) => {
     console.error("Error fetching experiences:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});
+};
 
 //controller to get a specific experience by ID
-const getExperience = asyncHandler(async (req, res) => {
-  const experience = await TopExperience.findById(req.params.id);
+const getExperience = async (req, res) => {
+  const { id } = req.params;
 
-  if (!experience) {
-    res.status(404).json({ message: "Experience Not Found" });
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "Experience Not Found" });
   }
 
-  res.status(200).json(experience);
-});
+  try {
+    const experience = await TopExperience.findById(id);
+    res.status(201).json({ success: true, data: experience });
+  } catch (error) {
+    console.error(
+      "An error occured while fetching this experience: ",
+      error.message
+    );
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //controller to create a new experience
-const createExperience = asyncHandler(async (req, res) => {
-  const { name, country, description, image, type, tags, submittedBy } =
-    req.body;
+const createExperience = async (req, res) => {
+  const experience = req.body;
 
   // Validate required fields
-  if (!name || !country || !description || !image || !type || !submittedBy) {
+  if (
+    !experience.name ||
+    !experience.country ||
+    !experience.description ||
+    !experience.image ||
+    !experience.type ||
+    !experience.submittedBy
+  ) {
     return res
       .status(400)
       .json({ error: "All required fields must be provided." });
   }
 
-  const experience = await TopExperience.create({
-    name,
-    country,
-    description,
-    image,
-    type,
-    tags,
-    submittedBy,
-  });
-  res.json(experience);
-});
+  const newExperience = new TopExperience(experience);
+  try {
+    await newExperience.save();
+    res.status(201).json({ success: true, data: newExperience });
+  } catch (error) {
+    console.erroe(
+      "An error occured while creating a top experience: ",
+      error.message
+    );
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //controller to update an experience
-const updateExperience = asyncHandler(async (req, res) => {
-  const experience = await TopExperience.findById(req.params.id);
-  if (!experience) {
-    res.status(404).json({ message: "Experience Not Found" });
+const updateExperience = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "Experience not found" });
   }
 
-  const updatedExperience = await TopExperience.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-    }
-  );
-
-  res.status(200).json(updatedExperience);
-});
+  try {
+    const updatedExperience = await TopExperience.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({ success: true, data: updatedExperience });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //controller to delete an experience
-const deleteExperience = asyncHandler(async (req, res) => {
-  const experience = await TopExperience.findById(req.params.id);
-  if (!experience) {
-    res.status(404).json({ message: "Experience Not Found" });
+const deleteExperience = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "Experience not found" });
   }
 
-  const deletedExperience = await TopExperience.findByIdAndDelete(
-    req.params.id
-  );
-  res.status(200).json({ message: `Deleted experience ${deletedExperience}` });
-});
+  try {
+    const deletedExperience = await TopExperience.findByIdAndDelete(id);
+    res.status(200).json({
+      success: true,
+      message: `Deleted experience ${deletedExperience.id} successfully`,
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: "Something went wrong, please try again.",
+    });
+  }
+};
 
 export {
   getExperiences,

@@ -1,4 +1,3 @@
-import asyncHandler from "express-async-handler";
 import Event from "../models/eventModel.js";
 import mongoose from "mongoose";
 
@@ -43,7 +42,7 @@ const getEvent = async (req, res) => {
 
   try {
     const event = await Event.findById(req.params.id);
-    res.status(201).json({ success: true, data: event });
+    res.status(200).json({ success: true, data: event });
   } catch (error) {
     console.error("An error occurred while fetching the user: ", error.message);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -84,7 +83,7 @@ const updateEvent = async (req, res) => {
       new: true,
     });
 
-    res.status(200).json({ success: true, data: updatedEvent });
+    res.status(201).json({ success: true, data: updatedEvent });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
@@ -102,7 +101,10 @@ const deleteEvent = async (req, res) => {
     const deletedEvent = await Event.findByIdAndDelete(id);
     res
       .status(200)
-      .json({ success: true, message: `Deleted event ${deletedEvent}` });
+      .json({
+        success: true,
+        message: `Deleted event ${deletedEvent.id} successfully`,
+      });
   } catch (error) {
     res.status(404).json({
       success: false,
