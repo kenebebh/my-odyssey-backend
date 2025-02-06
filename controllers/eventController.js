@@ -1,11 +1,9 @@
 import asyncHandler from "express-async-handler";
 import Event from "../models/eventModel.js";
+import mongoose from "mongoose";
 
 //controller to get all events and get with filtering or pagination if filter/pagination query was provided
-const getEvents = asyncHandler(async (req, res) => {
-  // const events = await Event.find();
-  // res.json(events);
-
+const getEvents = async (req, res) => {
   try {
     // Extract query parameters with defaults
     const limit = parseInt(req.query.limit) || 10; // Default limit: 10
@@ -20,7 +18,7 @@ const getEvents = asyncHandler(async (req, res) => {
     // Optional: Include total count for pagination metadata
     const totalEvents = await Event.countDocuments();
 
-    res.json({
+    res.status(200).json({
       data: events,
       meta: {
         total: totalEvents,
@@ -31,89 +29,86 @@ const getEvents = asyncHandler(async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching events:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
-});
+};
 
 //controller to get a specific event by ID
-const getEvent = asyncHandler(async (req, res) => {
-  const event = await Event.findById(req.params.id);
-  if (!event) {
-    res.status(404).json({ message: "Event Not Found" });
+const getEvent = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "Event Not Found" });
   }
 
-  res.status(200).json(event);
-});
+  try {
+    const event = await Event.findById(req.params.id);
+    res.status(201).json({ success: true, data: event });
+  } catch (error) {
+    console.error("An error occurred while fetching the user: ", error.message);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //controller to create a new event
-const createEvent = asyncHandler(async (req, res) => {
-  const {
-    name,
-    startDate,
-    endDate,
-    country,
-    description,
-    image,
-    status,
-    location,
-    startTime,
-    endTime,
-    ticketPrice,
-    ticketAvailability,
-    gallery,
-    ads,
-    adStatus,
-    metrics,
-  } = req.body;
+const createEvent = async (req, res) => {
+  const event = req.body;
 
-  if (!name || !startDate || !endDate || !location) {
-    res.status(400);
-    throw new Error("Please fill all required fields");
+  if (!event.name || !event.startDate || !event.endDate || !event.location) {
+    res
+      .status(400)
+      .json({ success: false, message: "Please fill all required fields" });
   }
 
-  const event = await Event.create({
-    name,
-    startDate,
-    endDate,
-    country,
-    description,
-    image,
-    status,
-    location,
-    startTime,
-    endTime,
-    ticketPrice,
-    ticketAvailability,
-    gallery,
-    ads,
-    adStatus,
-    metrics,
-  });
-  res.json(event);
-});
+  const newEvent = new Event(event);
+
+  try {
+    await newEvent.save();
+    res.status(201).json({ success: true, data: newEvent });
+  } catch (error) {
+    console.error("An error occurred while creating the user: ", error.message);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //controller to update an event
-const updateEvent = asyncHandler(async (req, res) => {
-  const event = await Event.findById(req.params.id);
-  if (!event) {
-    res.status(404).json({ message: "Event Not Found" });
-  }
-  const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
+const updateEvent = async (req, res) => {
+  const { id } = req.params;
 
-  res.status(200).json(updatedEvent);
-});
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "Event Not Found" });
+  }
+
+  try {
+    const updatedEvent = await Event.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+
+    res.status(200).json({ success: true, data: updatedEvent });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //controller to delete an event
-const deleteEvent = asyncHandler(async (req, res) => {
-  const event = await Event.findById(req.params.id);
-  if (!event) {
-    res.status(404).json({ message: "Event Not Found" });
+const deleteEvent = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "Event Not Found" });
   }
 
-  const deletedEvent = await Event.findByIdAndDelete(req.params.id);
-  res.status(200).json({ message: `Deleted event ${deletedEvent}` });
-});
+  try {
+    const deletedEvent = await Event.findByIdAndDelete(id);
+    res
+      .status(200)
+      .json({ success: true, message: `Deleted event ${deletedEvent}` });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: "Something went wrong, please try again.",
+    });
+  }
+};
 
 export { getEvents, getEvent, createEvent, updateEvent, deleteEvent };
