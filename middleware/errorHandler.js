@@ -1,7 +1,7 @@
-const { title } = require("process");
-const { constants } = require("../constants");
+import { title } from "process";
+import constants from "../constants.js";
 
-const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode ? res.statusCode : 500;
 
   switch (statusCode) {
@@ -45,5 +45,3 @@ const errorHandler = (err, req, res, next) => {
       break;
   }
 };
-
-module.exports = errorHandler;

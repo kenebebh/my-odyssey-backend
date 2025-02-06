@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "node and express backend for my odyssey dashboard",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",

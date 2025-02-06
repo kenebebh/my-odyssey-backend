@@ -1,9 +1,11 @@
-const express = require("express");
-var cors = require("cors");
-const errorHandler = require("./middleware/errorHandler");
-const connectDatabase = require("./config/databaseConnection");
+import express from "express";
+// import { errorHandler } from "./middleware/errorHandler";
+import { errorHandler } from "./middleware/errorHandler.js";
+import { connectDatabase } from "./config/databaseConnection.js";
+import dotenv from "dotenv";
+import cors from "cors";
 
-require("dotenv").config();
+dotenv.config();
 
 const app = express();
 app.use(cors());
