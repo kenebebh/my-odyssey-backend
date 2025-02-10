@@ -1,118 +1,115 @@
-import asyncHandler from "express-async-handler";
+import mongoose from "mongoose";
 import User from "../models/userModel.js";
 
 //controller to get all users
 //public access
-const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find();
-  res.json(users);
-});
+const getUsers = async (req, res, next) => {
+  try {
+    // Extract query parameters, if there is none, use default
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+
+    const users = await User.find()
+      .skip((page - 1) * limit) //Skip documents for previous pages
+      .limit(limit); //Limit the number of documents returned
+
+    //Include total count for pagination metadata
+    const totalUsers = await User.countDocuments();
+    res.status(200).json({
+      data: users,
+      meta: {
+        total: totalUsers,
+        page,
+        limit,
+        totalPages: Math.ceil(totalUsers / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching Users: ", error);
+    next();
+    // res.status(500).json({error: "Internal Server Error"})
+  }
+};
 
 //controller to get a specific user by ID
-//public access
 const getUser = async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "User Not Found" });
+  }
+
   try {
-    const user = await User.findById(req.params.id);
-    console.log(user);
-
-    if (!user) {
-      res.status(404).json({ message: "Can't find user" });
-    }
-
-    res.status(200).json(user);
+    const user = await User.findById(id);
+    res.status(200).json({ success: false, data: user });
   } catch (error) {
-    console.log(error);
+    console.error(
+      "An error occured while fetching user details : ",
+      error.message
+    );
     next();
   }
 };
 
 //controller to create a new user
-//public access
-const createUser = asyncHandler(async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    userImage,
-    gender,
-    dateOfBirth,
-    savedTripsCount,
-    verified,
-    deactivated,
-    phone,
-    address,
-    city,
-    country,
-    lastLoginDate,
-    bookedTrips,
-    travelHistory,
-    savedWishlists,
-    avgSessionDuration,
-    activityStatus,
-    travelInterests,
-    preferredDestinations,
-    supportTickets,
-    appRatings,
-  } = req.body;
+const createUser = async (req, res, next) => {
+  const user = req.body;
 
-  if (!firstName || !lastName || !email || !gender || !dateOfBirth) {
-    res.status(400);
-    throw new Error("Please fill all required fields");
+  if (
+    !user.firstName ||
+    !user.lastName ||
+    !user.email ||
+    !user.gender ||
+    !user.dateOfBirth
+  ) {
+    res.status(400).json({ error: "Please fill all required fields" });
   }
 
-  const user = await User.create({
-    firstName,
-    lastName,
-    email,
-    userImage,
-    gender,
-    dateOfBirth,
-    savedTripsCount,
-    verified,
-    deactivated,
-    phone,
-    address,
-    city,
-    country,
-    lastLoginDate,
-    bookedTrips,
-    travelHistory,
-    savedWishlists,
-    avgSessionDuration,
-    activityStatus,
-    travelInterests,
-    preferredDestinations,
-    supportTickets,
-    appRatings,
-  });
-  res.json(user);
-});
+  const newUser = new User(user);
+  try {
+    await newUser.save();
+    res.status(201).json({ success: true, data: newUser });
+  } catch (error) {
+    console.error("An error occured while creating a user: ", error.message);
+    next();
+  }
+};
 
 //controller to update a users details
-//public access
-const updateUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    res.status(404).json({ message: "Can't find user" });
+const updateUser = async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "User Not Found" });
   }
 
-  const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-
-  res.status(200).json(updatedUser);
-});
+  try {
+    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json({ success: true, data: updatedUser });
+  } catch (error) {
+    console.error("An error occured while updating user: ", error.message);
+    next();
+  }
+};
 
 //controller to delete a user
 //public access
-const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    res.status(404).json({ message: "Can't find user" });
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "User Not Found" });
   }
 
-  await User.findByIdAndDelete(req.params.id);
-  res.status(200).json({ message: `Deleted user ${req.params.id}` });
-});
+  try {
+    const deletedUser = await User.findByIdAndDelete(id);
+    res.status(200).json({ message: `Deleted user ${id}` });
+  } catch (error) {
+    console.error("Something went wrong, please try again.");
+    next();
+  }
+};
 
 export { getUsers, getUser, createUser, updateUser, deleteUser };

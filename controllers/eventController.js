@@ -90,7 +90,7 @@ const updateEvent = async (req, res) => {
 };
 
 //controller to delete an event
-const deleteEvent = async (req, res) => {
+const deleteEvent = async (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -99,17 +99,13 @@ const deleteEvent = async (req, res) => {
 
   try {
     const deletedEvent = await Event.findByIdAndDelete(id);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: `Deleted event ${deletedEvent.id} successfully`,
-      });
-  } catch (error) {
-    res.status(404).json({
-      success: false,
-      message: "Something went wrong, please try again.",
+    res.status(200).json({
+      success: true,
+      message: `Deleted event ${id} successfully`,
     });
+  } catch (error) {
+    console.error("Something went wrong, please try again.");
+    next();
   }
 };
 

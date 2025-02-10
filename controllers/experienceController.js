@@ -6,9 +6,8 @@ import mongoose from "mongoose";
 const getExperiences = async (req, res) => {
   try {
     // Extract query parameters with defaults
-    const limit = parseInt(req.query.limit) || 10; // Default limit: 10
-    console.log(limit);
-    const page = parseInt(req.query.page) || 1; // Default page: 1
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
 
     // MongoDB query to paginate results
     const experiences = await TopExperience.find()
@@ -18,7 +17,7 @@ const getExperiences = async (req, res) => {
     // Optional: Include total count for pagination metadata
     const totalExperiences = await TopExperience.countDocuments();
 
-    res.json({
+    res.status(200).json({
       data: experiences,
       meta: {
         total: totalExperiences,
@@ -43,7 +42,7 @@ const getExperience = async (req, res) => {
 
   try {
     const experience = await TopExperience.findById(id);
-    res.status(201).json({ success: true, data: experience });
+    res.status(200).json({ success: true, data: experience });
   } catch (error) {
     console.error(
       "An error occured while fetching this experience: ",
@@ -76,7 +75,7 @@ const createExperience = async (req, res) => {
     await newExperience.save();
     res.status(201).json({ success: true, data: newExperience });
   } catch (error) {
-    console.erroe(
+    console.error(
       "An error occured while creating a top experience: ",
       error.message
     );
@@ -107,7 +106,7 @@ const updateExperience = async (req, res) => {
 };
 
 //controller to delete an experience
-const deleteExperience = async (req, res) => {
+const deleteExperience = async (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -118,13 +117,11 @@ const deleteExperience = async (req, res) => {
     const deletedExperience = await TopExperience.findByIdAndDelete(id);
     res.status(200).json({
       success: true,
-      message: `Deleted experience ${deletedExperience.id} successfully`,
+      message: `Deleted experience ${id} successfully`,
     });
   } catch (error) {
-    res.status(404).json({
-      success: false,
-      message: "Something went wrong, please try again.",
-    });
+    console.error("Something went wrong, please try again.");
+    next();
   }
 };
 
