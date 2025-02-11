@@ -6,7 +6,7 @@ const getEvents = async (req, res) => {
   try {
     // Extract query parameters with defaults
     const limit = parseInt(req.query.limit) || 10; // Default limit: 10
-    console.log(limit);
+    // console.log(limit);
     const page = parseInt(req.query.page) || 1; // Default page: 1
 
     // MongoDB query to paginate results
