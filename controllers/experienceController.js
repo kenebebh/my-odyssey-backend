@@ -42,7 +42,7 @@ const getExperience = async (req, res) => {
 
   try {
     const experience = await TopExperience.findById(id);
-    res.status(200).json({ success: true, data: experience });
+    res.status(200).json({ success: true, experience: experience });
   } catch (error) {
     console.error(
       "An error occured while fetching this experience: ",

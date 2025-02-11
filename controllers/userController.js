@@ -41,7 +41,7 @@ const getUser = async (req, res, next) => {
 
   try {
     const user = await User.findById(id);
-    res.status(200).json({ success: false, data: user });
+    res.status(200).json({ success: true, user: user });
   } catch (error) {
     console.error(
       "An error occured while fetching user details : ",

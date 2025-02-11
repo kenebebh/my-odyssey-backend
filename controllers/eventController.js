@@ -42,7 +42,7 @@ const getEvent = async (req, res) => {
 
   try {
     const event = await Event.findById(req.params.id);
-    res.status(200).json({ success: true, data: event });
+    res.status(200).json({ success: true, event: event });
   } catch (error) {
     console.error("An error occurred while fetching the user: ", error.message);
     res.status(500).json({ success: false, message: "Internal Server Error" });
