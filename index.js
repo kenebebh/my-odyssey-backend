@@ -14,7 +14,7 @@ app.use(cors());
 connectDatabase();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use("/users", usersRoutes);
 app.use("/events", eventRoutes);
 app.use("/top-experiences", experienceRoutes);
