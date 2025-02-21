@@ -3,7 +3,7 @@ import TopExperience from "../models/experienceModel.js";
 import mongoose from "mongoose";
 
 //controler to get all experiences/ get filtered and/or paginated experiences
-const getExperiences = async (req, res) => {
+const getExperiences = async (req, res, next) => {
   try {
     // Extract query parameters with defaults
     const limit = parseInt(req.query.limit) || 10;
@@ -28,12 +28,13 @@ const getExperiences = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching experiences:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    next(error);
+    // res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 //controller to get a specific experience by ID
-const getExperience = async (req, res) => {
+const getExperience = async (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -48,12 +49,13 @@ const getExperience = async (req, res) => {
       "An error occured while fetching this experience: ",
       error.message
     );
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    next(error);
+    // res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
 //controller to create a new experience
-const createExperience = async (req, res) => {
+const createExperience = async (req, res, next) => {
   const experience = req.body;
 
   // Validate required fields
@@ -79,12 +81,13 @@ const createExperience = async (req, res) => {
       "An error occured while creating a top experience: ",
       error.message
     );
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    next(error);
+    // res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
 //controller to update an experience
-const updateExperience = async (req, res) => {
+const updateExperience = async (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -101,7 +104,12 @@ const updateExperience = async (req, res) => {
     );
     res.status(200).json({ success: true, data: updatedExperience });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    console.error(
+      "An error occurred while uodating the experience: ",
+      error.message
+    );
+    next(error);
+    // res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -121,7 +129,7 @@ const deleteExperience = async (req, res, next) => {
     });
   } catch (error) {
     console.error("Something went wrong, please try again.");
-    next();
+    next(error);
   }
 };
 

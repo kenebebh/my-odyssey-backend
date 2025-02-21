@@ -2,8 +2,11 @@ import Event from "../models/eventModel.js";
 import mongoose from "mongoose";
 
 //controller to get all events and get with filtering or pagination if filter/pagination query was provided
-const getEvents = async (req, res) => {
+const getEvents = async (req, res, next) => {
   try {
+    res.status(401);
+    throw new Error("I created this error");
+
     // Extract query parameters with defaults
     const limit = parseInt(req.query.limit) || 10; // Default limit: 10
     // console.log(limit);
@@ -28,12 +31,13 @@ const getEvents = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching events:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    next(error);
+    // res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
 //controller to get a specific event by ID
-const getEvent = async (req, res) => {
+const getEvent = async (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -45,12 +49,13 @@ const getEvent = async (req, res) => {
     res.status(200).json({ success: true, event: event });
   } catch (error) {
     console.error("An error occurred while fetching the user: ", error.message);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    next(error);
+    // res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
 //controller to create a new event
-const createEvent = async (req, res) => {
+const createEvent = async (req, res, next) => {
   const event = req.body;
 
   if (!event.name || !event.startDate || !event.endDate || !event.location) {
@@ -66,7 +71,8 @@ const createEvent = async (req, res) => {
     res.status(201).json({ success: true, data: newEvent });
   } catch (error) {
     console.error("An error occurred while creating the user: ", error.message);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    next(error);
+    // res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -85,7 +91,12 @@ const updateEvent = async (req, res) => {
 
     res.status(201).json({ success: true, data: updatedEvent });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    console.error(
+      "An error occurred while updating this event: ",
+      error.message
+    );
+    next(error);
+    // res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -105,7 +116,7 @@ const deleteEvent = async (req, res, next) => {
     });
   } catch (error) {
     console.error("Something went wrong, please try again.");
-    next();
+    next(error);
   }
 };
 

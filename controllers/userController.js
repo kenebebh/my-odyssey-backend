@@ -26,7 +26,7 @@ const getUsers = async (req, res, next) => {
     });
   } catch (error) {
     console.error("Error fetching Users: ", error);
-    next();
+    next(error);
     // res.status(500).json({error: "Internal Server Error"})
   }
 };
@@ -47,7 +47,7 @@ const getUser = async (req, res, next) => {
       "An error occured while fetching user details : ",
       error.message
     );
-    next();
+    next(error);
   }
 };
 
@@ -71,7 +71,7 @@ const createUser = async (req, res, next) => {
     res.status(201).json({ success: true, data: newUser });
   } catch (error) {
     console.error("An error occured while creating a user: ", error.message);
-    next();
+    next(error);
   }
 };
 
@@ -90,7 +90,7 @@ const updateUser = async (req, res, next) => {
     res.status(200).json({ success: true, data: updatedUser });
   } catch (error) {
     console.error("An error occured while updating user: ", error.message);
-    next();
+    next(error);
   }
 };
 
@@ -108,7 +108,7 @@ const deleteUser = async (req, res) => {
     res.status(200).json({ message: `Deleted user ${id}` });
   } catch (error) {
     console.error("Something went wrong, please try again.");
-    next();
+    next(error);
   }
 };
 
