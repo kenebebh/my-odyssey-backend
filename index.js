@@ -6,6 +6,7 @@ import cors from "cors";
 import eventRoutes from "./routes/eventRoutes.js";
 import experienceRoutes from "./routes/experiencesRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/users", usersRoutes);
 app.use("/events", eventRoutes);
 app.use("/top-experiences", experienceRoutes);
+app.use("/api/admin", adminRoutes);
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
