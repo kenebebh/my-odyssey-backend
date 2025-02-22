@@ -20,12 +20,13 @@ app.use("/users", usersRoutes);
 app.use("/events", eventRoutes);
 app.use("/top-experiences", experienceRoutes);
 app.use("/api/admin", adminRoutes);
+
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
-  res.json({ message: "hello my queen" });
+  res.json({ message: "Server is ready" });
 });
 
 app.listen(port, () => {

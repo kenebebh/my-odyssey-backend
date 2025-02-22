@@ -96,7 +96,7 @@ const updateUser = async (req, res, next) => {
 
 //controller to delete a user
 //public access
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {

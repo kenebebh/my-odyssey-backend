@@ -1,6 +1,7 @@
 import express from "express";
 import {
   authenticateAdmin,
+  deleteAdmin,
   getAdminDetails,
   getAllAdmins,
   logoutAdmin,
@@ -24,5 +25,8 @@ router.route("/:id").get(getAdminDetails).patch(updateAdminDetails);
 
 //logout admin
 router.route("/logout").post(logoutAdmin);
+
+//delete an admin
+router.route("/:id").delete(deleteAdmin);
 
 export default router;

@@ -19,7 +19,26 @@ const authenticateAdmin = async (req, res, next) => {
 //route POST /api/admin
 //@access public
 const registerAdmin = async (req, res, next) => {
-  res.status(200).json({ message: "Register Admin" });
+  const admin = req.body;
+
+  const adminExists = await Admin.findOne({ email: admin.email });
+
+  if (adminExists) {
+    res.status(400).json({ success: false, message: "Admin exists already" });
+  }
+
+  const newAdmin = new Admin(admin);
+
+  try {
+    await newAdmin.save();
+    res.status(201).json({ success: true, data: newAdmin });
+  } catch (error) {
+    console.error(
+      "An error occured while creating a new admin: ",
+      error.message
+    );
+    next(error);
+  }
 };
 
 //controller to logout an admin
@@ -43,6 +62,23 @@ const updateAdminDetails = async (req, res, next) => {
   res.status(200).json({ message: "Update Admin Details" });
 };
 
+const deleteAdmin = async (req, res) => {
+  console.log("Admin request: ", req);
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(404).json({ success: false, message: "Admin Not Found" });
+  }
+
+  try {
+    const deletedAdmin = await Admin.findByIdAndDelete(id);
+    res.status(200).json({ message: `Deleted admin ${id}` });
+  } catch (error) {
+    console.error("Something went wrong, please try again.");
+    next(error);
+  }
+};
+
 export {
   authenticateAdmin,
   getAdminDetails,
@@ -50,4 +86,5 @@ export {
   logoutAdmin,
   registerAdmin,
   updateAdminDetails,
+  deleteAdmin,
 };

@@ -55,23 +55,33 @@ const adminSchema = new mongoose.Schema(
 );
 
 // Pre-save middleware to hash the password if it has been modified or is new.
-// adminSchema.pre('save', async function (next) {
-//   if (!this.isModified('password')) {
-//     return next();
-//   }
-//   try {
-//     const salt = await bcrypt.genSalt(10);
-//     this.password = await bcrypt.hash(this.password, salt);
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+adminSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 // // Instance method to compare a provided password with the stored hash.
 // adminSchema.methods.comparePassword = async function (candidatePassword) {
 //   return bcrypt.compare(candidatePassword, this.password);
 // };
+
+// Transform the document when converting to JSON
+adminSchema.set("toJSON", {
+  transform: function (doc, ret) {
+    ret.id = ret._id.toHexString();
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  },
+});
 
 const Event = mongoose.model("Admin", adminSchema);
 export default Event;
