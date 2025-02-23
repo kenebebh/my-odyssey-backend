@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import generateToken from "../utils/generateToken.js";
 import Admin from "../models/adminModel.js";
 
 //controller to get all admins
@@ -30,6 +31,7 @@ const registerAdmin = async (req, res, next) => {
   const newAdmin = new Admin(admin);
 
   try {
+    generateToken(res, admin.id);
     await newAdmin.save();
     res.status(201).json({ success: true, data: newAdmin });
   } catch (error) {
@@ -63,7 +65,7 @@ const updateAdminDetails = async (req, res, next) => {
 };
 
 const deleteAdmin = async (req, res) => {
-  console.log("Admin request: ", req);
+  console.log("Admin request: ", req.params);
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
