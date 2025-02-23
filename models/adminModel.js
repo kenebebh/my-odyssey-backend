@@ -69,9 +69,9 @@ adminSchema.pre("save", async function (next) {
 });
 
 // // Instance method to compare a provided password with the stored hash.
-// adminSchema.methods.comparePassword = async function (candidatePassword) {
-//   return bcrypt.compare(candidatePassword, this.password);
-// };
+adminSchema.methods.comparePassword = async function (enteredPassword) {
+  return bcrypt.compare(enteredPassword, this.password);
+};
 
 // Transform the document when converting to JSON
 adminSchema.set("toJSON", {

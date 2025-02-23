@@ -13,7 +13,44 @@ const getAllAdmins = async (req, res, next) => {
 //route POST /api/admin/auth
 //@access public
 const authenticateAdmin = async (req, res, next) => {
-  res.status(200).json({ message: "Authenticate Admin" });
+  try {
+    const { email, password } = req.body;
+
+    const admin = await Admin.findOne({ email });
+
+    if (!admin) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid Email or Password" });
+    }
+
+    //compare password
+    const isValidPassword = await admin.comparePassword(password);
+
+    if (!isValidPassword) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid Email or Password" });
+    }
+
+    //Generate JWT Token
+    generateToken(res, admin._id);
+
+    //Send response
+    res.status(200).json({
+      success: true,
+      data: {
+        id: admin._id,
+        firstname: admin.firstName,
+        lastname: admin.lastName,
+        email: admin.email,
+        role: admin.role,
+      },
+    });
+  } catch (error) {
+    console.error("Error during admin authentication:", error.message);
+    next(error);
+  }
 };
 
 //controller to register a new admin
@@ -28,11 +65,8 @@ const registerAdmin = async (req, res, next) => {
     res.status(400).json({ success: false, message: "Admin exists already" });
   }
 
-  const newAdmin = new Admin(admin);
-
   try {
     generateToken(res, admin.id);
-    await newAdmin.save();
     res.status(201).json({ success: true, data: newAdmin });
   } catch (error) {
     console.error(
@@ -65,7 +99,6 @@ const updateAdminDetails = async (req, res, next) => {
 };
 
 const deleteAdmin = async (req, res) => {
-  console.log("Admin request: ", req.params);
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
