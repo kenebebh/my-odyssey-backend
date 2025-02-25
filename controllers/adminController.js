@@ -81,7 +81,12 @@ const registerAdmin = async (req, res, next) => {
 //route POST /api/admin/logout
 //@access public
 const logoutAdmin = async (req, res, next) => {
-  res.status(200).json({ message: "Logout Admin" });
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.status(200).json({ message: "Logged out Admin" });
 };
 
 //controller to get admin details
