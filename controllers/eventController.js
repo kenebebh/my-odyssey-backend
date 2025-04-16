@@ -4,9 +4,6 @@ import mongoose from "mongoose";
 //controller to get all events and get with filtering or pagination if filter/pagination query was provided
 const getEvents = async (req, res, next) => {
   try {
-    res.status(401);
-    throw new Error("I created this error");
-
     // Extract query parameters with defaults
     const limit = parseInt(req.query.limit) || 10; // Default limit: 10
     // console.log(limit);

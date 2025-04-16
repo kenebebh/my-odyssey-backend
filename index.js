@@ -7,6 +7,7 @@ import eventRoutes from "./routes/eventRoutes.js";
 import experienceRoutes from "./routes/experiencesRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ connectDatabase();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 app.use("/users", usersRoutes);
 app.use("/events", eventRoutes);
 app.use("/top-experiences", experienceRoutes);
